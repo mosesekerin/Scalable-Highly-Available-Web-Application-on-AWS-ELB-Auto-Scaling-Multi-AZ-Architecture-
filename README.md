@@ -67,61 +67,129 @@ This project demonstrates the ability to:
 
 ##  **Implementation Steps**
 
-### **1. Inspect Existing VPC**
+### *1. Environment Inspection*
 
-* Reviewed subnets
-* Identified public and private routing
-* Validated existing Internet Gateway
-* Verified security group rules
+Before modifying the architecture, I inspected the existing VPC setup to understand the current state of the café’s infrastructure.
 
-### **2. Extend Network Across Multiple AZs**
+Key activities included:
 
-* Added new subnets in a second Availability Zone
-* Updated route tables for proper connectivity
-* Ensured subnets were correctly tagged (for ALB + ASG discovery)
+* Reviewing the VPC, subnets, route tables, and IGW configuration
+* Analyzing the *CafeSG* security group and identifying open ports
+* Verifying public/private subnet placement and their internet accessibility
+* Confirming whether instances in Private Subnet 1 and 2 should reach the internet
+* Checking if the existing *CafeWebAppServer* instance was publicly reachable
+* Identifying the AMI created during lab setup ( Cafe WebServer Image )
 
-### **3. Create Application Load Balancer (ALB)**
+This inspection step helped validate assumptions and ensured readiness for a multi-AZ deployment.
 
-* Configured listeners (HTTP :80)
-* Created target groups
-* Enabled health checks
-* Added both subnets (AZ-A and AZ-B) for high availability
+---
 
-### **4. Create Launch Template**
+### *2. Updating the Network for Multi-AZ High Availability*
 
-* AMI ID
-* Instance type (e.g., t2.micro)
-* Key pair
-* Security group
-* Bootstrapping script (User Data) to install web server:
+#### *2.1 Create a NAT Gateway in the Second Availability Zone*
 
-```
-#!/bin/bash
-sudo yum install httpd -y
-sudo systemctl start httpd
-sudo systemctl enable httpd
-echo "<h1>Café Web Server - $(hostname)</h1>" > /var/www/html/index.html
-```
+To support EC2 instances in *Private Subnet 2* and enable outbound internet access:
 
-### **5. Create Auto Scaling Group**
+* Created a *NAT Gateway* in the public subnet of the second Availability Zone
+* Allocated an Elastic IP for the NAT Gateway
+* Updated route tables so that Private Subnet 2 routes 0.0.0.0/0 traffic to this new NAT Gateway
 
-* Minimum capacity: 1
-* Desired capacity: 2
-* Maximum capacity: 4
-* Target group attached for load balancing
-* Subnets in both AZs
+This ensured instances deployed across multiple AZs have consistent outbound internet access for updates, patching, and metadata retrieval.
 
-### **6. Configure CloudWatch Alarms for Auto Scaling**
+---
 
-* Scale out when CPU > 60%
-* Scale in when CPU < 20%
+### *3. Creating a Launch Template*
 
-### **7. Testing**
+Using the AMI generated from the *CafeWebAppServer*, I created a standardized launch template for Auto Scaling.
 
-* Simulated heavy load using load-testing tools
-* Observed ALB distributing traffic
-* Verified new EC2 instances starting automatically
-* Terminated one instance to test high availability (traffic remained uninterrupted)
+Launch template configuration:
+
+* *AMI: *Cafe WebServer Image (from My AMIs)
+* *Instance Type*: t2.micro
+* *Key Pair*: Newly generated and downloaded for SSH access
+* *Security Group*: CafeSG
+* *Tags*:
+
+  * Key: Name
+  * Value: webserver
+  * Resource Type: Instances
+* *IAM Instance Profile*: CafeRole (required for session manager and metadata access)
+
+This template serves as the blueprint for all future EC2 instances launched by the Auto Scaling group.
+
+---
+
+### *4. Creating an Auto Scaling Group*
+
+Next, I created an Auto Scaling Group (ASG) using the launch template.
+
+Configuration:
+
+* *ASG Name*: (custom name)
+* *VPC*: The existing lab VPC
+* *Subnets*: Private Subnet 1 and Private Subnet 2
+* *Desired Capacity*: 2
+* *Minimum Capacity*: 2
+* *Maximum Capacity*: 6
+* *Scaling Policy: *Target Tracking Scaling Policy
+
+  * Metric: *Average CPU Utilization*
+  * Target Value: 25%
+  * Instance Warmup: 60 seconds
+
+To verify accuracy, I checked the EC2 console to confirm two running instances tagged “webserver”.
+
+---
+
+### *5. Creating an Application Load Balancer*
+
+To expose the web app to the internet and distribute incoming traffic evenly:
+
+* Created an *Application Load Balancer (ALB)*
+* *Subnets*: Both public subnets (Multi-AZ for HA)
+* *Security Group*: New SG allowing HTTP (port 80) from anywhere
+* *Target Group: Created a new target group but did *not register targets initially
+
+After ALB activation:
+
+* Modified the Auto Scaling Group to attach the new *target group*
+* Ensured new instances automatically register with the ALB
+
+This allowed public users to access the private EC2 instances via the ALB endpoint.
+
+---
+
+### *6. Testing Load Balancing & Auto Scaling*
+
+#### *6.1 Functional Test (Without Load)*
+
+* Accessed the ALB DNS name
+* Appended /cafe to load the café application
+* If issues occurred, validated:
+
+  * NAT configuration
+  * Route tables
+  * IAM role on launch template
+  * ALB in public subnets
+  * Auto Scaling deployment correctness
+  * Security group configurations
+
+#### *6.2 Load Test (Automatic Scaling Validation)*
+
+Using *AWS Systems Manager Session Manager*, I connected to one webserver instance and ran a CPU stress test:
+
+
+sudo amazon-linux-extras install epel
+sudo yum install stress -y
+stress --cpu 1 --timeout 600
+
+
+During the test:
+
+* CloudWatch detected increased CPU utilization
+* Auto Scaling automatically launched additional EC2 instances
+* ALB distributed incoming traffic across the new instances
+* The system demonstrated graceful scaling under load
 
 ---
 
