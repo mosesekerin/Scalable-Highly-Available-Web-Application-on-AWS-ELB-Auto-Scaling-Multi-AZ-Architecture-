@@ -43,6 +43,9 @@ This project demonstrates the ability to:
                    VPC
 ```
 
+![Architectural Diagram](/architecture/final-architecture.png)
+---
+
 **Key Features:**
 
 * Multi-AZ deployment for high availability
