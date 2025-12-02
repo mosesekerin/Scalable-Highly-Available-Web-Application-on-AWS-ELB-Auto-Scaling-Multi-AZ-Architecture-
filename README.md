@@ -202,7 +202,7 @@ aws-ha-webapp-project/
 
 ---
 
-#  **Security Considerations**
+##  **Security Considerations**
 
 This architecture applies several layers of security to protect infrastructure and application traffic:
 
@@ -232,7 +232,7 @@ This architecture applies several layers of security to protect infrastructure a
 
 ---
 
-#  **Cost Optimization**
+##  **Cost Optimization**
 
 Several decisions in this architecture reduce operational costs:
 
@@ -261,7 +261,7 @@ Several decisions in this architecture reduce operational costs:
 
 ---
 
-# ��️ **Disaster Recovery / High Availability**
+##  **Disaster Recovery / High Availability**
 
 This project implements a strong foundation for DR and HA:
 
@@ -289,7 +289,7 @@ This setup achieves resilience at the compute, networking, and load-balancing la
 
 ---
 
-#  **Key Learnings**
+##  **Key Learnings**
 
 From this project, the following cloud engineering concepts were reinforced:
 
@@ -304,7 +304,7 @@ From this project, the following cloud engineering concepts were reinforced:
 
 ---
 
-#  **Why This Project Matters**
+##  **Why This Project Matters**
 
 This project demonstrates real-world skills expected from a Cloud/DevOps Engineer:
 
@@ -318,7 +318,7 @@ This is the type of project that **impresses recruiters** because it shows you c
 
 ---
 
-#  **Future Improvements**
+##  **Future Improvements**
 
 To strengthen the solution and bring it closer to enterprise-grade:
 
