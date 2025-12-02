@@ -178,11 +178,11 @@ This allowed public users to access the private EC2 instances via the ALB endpoi
 
 Using *AWS Systems Manager Session Manager*, I connected to one webserver instance and ran a CPU stress test:
 
-
+```
 sudo amazon-linux-extras install epel
 sudo yum install stress -y
 stress --cpu 1 --timeout 600
-
+```
 
 During the test:
 
