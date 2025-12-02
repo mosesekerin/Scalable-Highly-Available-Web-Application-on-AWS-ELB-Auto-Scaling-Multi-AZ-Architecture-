@@ -27,22 +27,6 @@ This project demonstrates the ability to:
 
 ##  **Architecture**
 
-```
-                  Internet
-                      │
-                Application
-              Load Balancer
-        ┌──────────┴──────────┐
-        │                      │
-  Availability Zone A   Availability Zone B
-        │                      │
-   EC2 Instance          EC2 Instance
- (Auto Scaling Group distributes instances)
-        │                      │
-        └──────────┬───────────┘
-                   VPC
-```
-
 ![Architectural Diagram](/architecture/final-architecture.png)
 ---
 
@@ -199,19 +183,21 @@ During the test:
 ##  **Repository Structure**
 
 ```
-/docs
-  architecture.png
-  scaling-diagram.png
-
-/scripts
-  user-data.sh
-  load-test.sh
-
-/config
-  launch-template.json
-  target-group.json
-
-README.md
+aws-ha-webapp-project/
+ ├── README.md
+ ├── architecture/
+ │     └── diagram.png
+ ├── infra/
+ │     ├── setup-infra.sh
+ │     ├── create-alb.sh
+ │     ├── create-asg.sh
+ │     └── cleanup.sh
+ ├── scripts/
+ │     ├── user-data.sh
+ │     ├── stress-test.sh
+ │     └── check-alb-health.sh
+ └── app/
+       └── index.html (optional)
 ```
 
 ---
