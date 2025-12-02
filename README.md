@@ -1,8 +1,8 @@
-#  **Scalable & Highly Available Web Application on AWS (ELB + Auto Scaling + Multi-AZ Architecture)**
+#  ***Scalable & Highly Available Web Application on AWS (ELB + Auto Scaling + Multi-AZ Architecture)***
 
 ---
 
-##  **Project Overview**
+##  ***Project Overview***
 
 This project simulates preparing the café’s website for a sudden spike in traffic after being featured on a popular TV food show.
 To ensure responsiveness, eliminate single points of failure, and handle fluctuating demand, I built a **scalable, load-balanced, multi-AZ architecture** using AWS services.
@@ -11,7 +11,7 @@ The solution distributes traffic across multiple EC2 instances, automatically sc
 
 ---
 
-##  **Objectives**
+##  ***Objectives***
 
 This project demonstrates the ability to:
 
@@ -25,12 +25,12 @@ This project demonstrates the ability to:
 
 ---
 
-##  **Architecture**
+##  ***Architecture***
 
 ![Architectural Diagram](/architecture/final-architecture.png)
 ---
 
-**Key Features:**
+***Key Features:***
 
 * Multi-AZ deployment for high availability
 * ALB distributes incoming traffic
@@ -40,7 +40,7 @@ This project demonstrates the ability to:
 
 ---
 
-##  **AWS Services Used**
+##  ***AWS Services Used***
 
 * **Amazon EC2**
 * **Elastic Load Balancer (Application Load Balancer)**
@@ -52,9 +52,9 @@ This project demonstrates the ability to:
 
 ---
 
-##  **Implementation Steps**
+##  ***Implementation Steps***
 
-### *1. Environment Inspection*
+### **1. Environment Inspection**
 
 Before modifying the architecture, I inspected the existing VPC setup to understand the current state of the café’s infrastructure.
 
@@ -71,7 +71,7 @@ This inspection step helped validate assumptions and ensured readiness for a mul
 
 ---
 
-### *2. Updating the Network for Multi-AZ High Availability*
+### **2. Updating the Network for Multi-AZ High Availability**
 
 #### *2.1 Create a NAT Gateway in the Second Availability Zone*
 
@@ -85,7 +85,7 @@ This ensured instances deployed across multiple AZs have consistent outbound int
 
 ---
 
-### *3. Creating a Launch Template*
+### **3. Creating a Launch Template**
 
 Using the AMI generated from the *CafeWebAppServer*, I created a standardized launch template for Auto Scaling.
 
@@ -106,7 +106,7 @@ This template serves as the blueprint for all future EC2 instances launched by t
 
 ---
 
-### *4. Creating an Auto Scaling Group*
+### **4. Creating an Auto Scaling Group**
 
 Next, I created an Auto Scaling Group (ASG) using the launch template.
 
@@ -128,7 +128,7 @@ To verify accuracy, I checked the EC2 console to confirm two running instances t
 
 ---
 
-### *5. Creating an Application Load Balancer*
+### **5. Creating an Application Load Balancer**
 
 To expose the web app to the internet and distribute incoming traffic evenly:
 
@@ -146,7 +146,7 @@ This allowed public users to access the private EC2 instances via the ALB endpoi
 
 ---
 
-### *6. Testing Load Balancing & Auto Scaling*
+### **6. Testing Load Balancing & Auto Scaling**
 
 #### *6.1 Functional Test (Without Load)*
 
@@ -308,13 +308,11 @@ From this project, the following cloud engineering concepts were reinforced:
 
 This project demonstrates real-world skills expected from a Cloud/DevOps Engineer:
 
-* You architected a **production-style** web application infrastructure.
-* You showcased **hands-on expertise** using core AWS services.
-* You proved you understand **high availability**, **scaling**, and **cloud-native security**.
-* You validated performance using **CPU stress testing**, similar to load testing in real deployments.
+* I architected a **production-style** web application infrastructure.
+* I showcased **hands-on expertise** using core AWS services, both on the CLI and GUI.
+* I proved you understand **high availability**, **scaling**, and **cloud-native security**.
+* I validated performance using **CPU stress testing**, similar to load testing in real deployments.
 * The architecture matches what is used by real companies running public-facing workloads.
-
-This is the type of project that **impresses recruiters** because it shows you can build, optimize, and secure infrastructure end-to-end.
 
 ---
 
